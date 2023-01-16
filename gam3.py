@@ -6,7 +6,7 @@ screen = pygame.display.set_mode((1920, 1080))
 
 vel = 20
 
-#player stats
+# player stats
 
 x = 1920 / 2
 y = 1060
@@ -21,7 +21,7 @@ wants_down = False
 # Which side is facing?
 facing = ' '
 
-#enemy stats
+# enemy stats
 
 ex = 1700
 ey = 1050
@@ -29,12 +29,7 @@ ey = 1050
 ewidth = 30
 eheight = 30
 
-
-
-
-
 clock = pygame.time.Clock()
-
 
 running = True
 while running:
@@ -70,11 +65,10 @@ while running:
         wants_down = True
 
     # Make thing to down (Fall down)
-    if wants_jump == False and y < 1060:
+    if wants_down == True and y < 1060:
         y += vel
         if y == 1060:
             wants_down = False
-
 
     enemy = pygame.draw.rect(screen, (20, 70, 230), (ex, ey, eheight, ewidth))
 
@@ -83,7 +77,6 @@ while running:
             attack = pygame.draw.arc(screen, (255, 0, 0), (x + 20, y - 30, 25, 70), 11, 13.7, 3)
         else:
             attack = pygame.draw.arc(screen, (255, 0, 0), (x - 25, y - 30, 25, 70), 1.7, 4.7, 3)
-
 
     player = pygame.draw.rect(screen, (255, 0, 0), (x, y, height, width))
     clock.tick(30)
