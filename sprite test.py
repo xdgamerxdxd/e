@@ -4,9 +4,6 @@ pygame.init()
 
 screen = pygame.display.set_mode((1920, 1080))
 
-x = 1920 / 2
-y = 1060
-
 
 # Is player
 class Player(pygame.sprite.Sprite):
@@ -40,7 +37,7 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_DOWN] and self.rect.y < 1080 - self.rect.height:
             self.rect.y += vel
 
-
+# is enemeh or sth
 class Player1(pygame.sprite.Sprite):
     def __init__(self):
         super(Player1, self).__init__()
@@ -92,11 +89,11 @@ all_sprites_list.add(enemy)
 all_sprites_list.add(player)
 
 # gib pleher and enemeh coords
-player.rect.x = x
-player.rect.y = y
+player.rect.x = 500
+player.rect.y = 590
 
-enemy.rect.x = 1000
-enemy.rect.y = 1060
+enemy.rect.x = 1200
+enemy.rect.y = 400
 
 
 clock = pygame.time.Clock()
@@ -124,7 +121,7 @@ while running:
     # if player collide enemy then mak plaher ded lol ezpz
     if pygame.sprite.spritecollideany(player, custom_list):
         player.kill()
-    # player = pygame.draw.rect(screen, (255, 0, 0), (x, y, height, width))
+
     clock.tick(30)
     pygame.display.flip()
 pygame.quit()
