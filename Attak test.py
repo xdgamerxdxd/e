@@ -16,8 +16,10 @@ class Player(pygame.sprite.Sprite):
         self.image.fill(color)
 
         pygame.draw.ellipse(self.image, color, [0, 0, width, height])
-        # get rect woooooooo
+
+       # get rect woooooooo //// Gives player a hitbox
         self.rect = self.image.get_rect()
+
         # which way is player facing
         self.facing = ''
         # Is player alive????
@@ -58,6 +60,7 @@ class Player(pygame.sprite.Sprite):
                                                   1.7, 4.7, 3)
 
 
+# make attak
 class Attack(pygame.sprite.Sprite):
     def __init__(self):
         super(Attack, self).__init__()
@@ -72,10 +75,13 @@ class Attack(pygame.sprite.Sprite):
         self.count = False
         self.counter = 10
         self.facing = ''
+
     def update(self):
 
+        # what attack looks like without pushing button
         self.image = pygame.image.load('nowepon.png')
 
+        # which way is attack facing
         if player.facing == 'right' and self.count == False:
             self.rect.x = player.rect.x + 50
         if player.facing == 'left' and self.count == False:
@@ -171,10 +177,6 @@ enemy.rect.y = 400
 
 clock = pygame.time.Clock()
 
-counter, text = 10, '10'.rjust(3)
-pygame.time.set_timer(pygame.USEREVENT, 1000)
-font = pygame.font.SysFont('Consolas', 30)
-
 running = True
 while running:
 
@@ -189,12 +191,15 @@ while running:
             running = False
         if keys[pygame.K_ESCAPE]:
             running = False
+
     # make things spawn in screen
     all_sprites_list.draw(screen)
+
     # update the thangs
-    player.update()
+    if player.live == True:
+        player.update()
+        attack.update()
     enemy.update()
-    attack.update()
     # if player collide enemy then mak plaher ded lol ezpz also if attak is on then pleher is not die lulullu
     if pygame.sprite.spritecollideany(player, custom_list) and player.atk == False:
         player.kill()
@@ -202,7 +207,7 @@ while running:
     if pygame.sprite.spritecollideany(player, custom_list) and player.atk == True:
         enemy.kill()
 
-    if pygame.sprite.spritecollideany(attack, custom_list) and attack.on == True:
+    if pygame.sprite.spritecollideany(attack, custom_list):
         enemy.kill()
 
     clock.tick(30)
