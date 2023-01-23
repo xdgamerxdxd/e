@@ -58,52 +58,6 @@ class Player(pygame.sprite.Sprite):
                                                   1.7, 4.7, 3)
 
 
-class Attack(pygame.sprite.Sprite):
-    def __init__(self):
-        super(Attack, self).__init__()
-
-        self.image = pygame.image.load('nowepon.png')
-
-        self.image.set_colorkey((255,255,255))
-
-        self.rect = self.image.get_rect()
-
-        self.on = False
-        self.count = False
-        self.counter = 10
-        self.facing = ''
-    def update(self):
-
-        self.image = pygame.image.load('nowepon.png')
-
-        if player.facing == 'right' and self.count == False:
-            self.rect.x = player.rect.x + 50
-        if player.facing == 'left' and self.count == False:
-            self.rect.x = player.rect.x - 55
-
-        if keys[pygame.K_i] and self.count == False:
-            self.count = True
-            self.on = True
-            self.counter = 10
-            self.rect.y = player.rect.y - 40
-            if player.facing == 'right':
-                self.facing = 'right'
-            else:
-                self.facing = 'left'
-
-        if self.count == True:
-            self.image = pygame.image.load('san_attack.png')
-            self.counter -= 1
-            if self.facing == 'right':
-                self.rect.x += 20
-            if self.facing == 'left':
-                self.rect.x -= 20
-
-        if self.counter == -10:
-            self.count = False
-            self.on = False
-
-
 # is enemeh or sth
 class Player1(pygame.sprite.Sprite):
     def __init__(self):
@@ -140,16 +94,10 @@ custom_list = pygame.sprite.Group()
 # list where random and also maybe player
 all_sprites_list = pygame.sprite.Group()
 
-attack_list = pygame.sprite.Group()
-
 # mak pleher
 player = Player((255, 0, 0), 20, 20)
 # mek enemeh
 enemy = Player1()
-
-attack = Attack()
-
-attack_list.add(attack)
 
 # add enemeh to list
 custom_list.add(enemy)
@@ -160,20 +108,14 @@ all_sprites_list.add(enemy)
 # edd pleher to thes list
 all_sprites_list.add(player)
 
-all_sprites_list.add(attack)
-
 # gib pleher and enemeh coords
-e = player.rect.x = 500
-r = player.rect.y = 590
+player.rect.x = 500
+player.rect.y = 590
 
 enemy.rect.x = 1200
 enemy.rect.y = 400
 
 clock = pygame.time.Clock()
-
-counter, text = 10, '10'.rjust(3)
-pygame.time.set_timer(pygame.USEREVENT, 1000)
-font = pygame.font.SysFont('Consolas', 30)
 
 running = True
 while running:
@@ -194,15 +136,12 @@ while running:
     # update the thangs
     player.update()
     enemy.update()
-    attack.update()
+
     # if player collide enemy then mak plaher ded lol ezpz also if attak is on then pleher is not die lulullu
     if pygame.sprite.spritecollideany(player, custom_list) and player.atk == False:
         player.kill()
         player.live = False
     if pygame.sprite.spritecollideany(player, custom_list) and player.atk == True:
-        enemy.kill()
-
-    if pygame.sprite.spritecollideany(attack, custom_list) and attack.on == True:
         enemy.kill()
 
     clock.tick(30)

@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.image.fill(color)
 
         pygame.draw.ellipse(self.image, color, [0, 0, width, height])
-        # get rect woooooooo
+                             # get rect woooooooo
         self.rect = self.image.get_rect()
         # which way is player facing
         self.facing = ''
@@ -47,62 +47,13 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_DOWN] and self.rect.y < 1080 - self.rect.height:
                 self.rect.y += vel
 
-            if keys[pygame.K_o]:
+            if keys[pygame.K_o] and counter <= 0:
                 if self.facing == 'right':
                     self.atk = True
-                    pygame.draw.arc(screen, (255, 0, 0), (self.rect.x + 20, self.rect.y - 30, 25, 70), 11,
-                                                  13.7, 3)
+                    attack = pygame.draw.arc(screen, (255, 0, 0), (self.rect.x + 20, self.rect.y - 30, 25, 70), 11, 13.7, 3)
                 else:
                     self.atk = True
-                    pygame.draw.arc(screen, (255, 0, 0), (self.rect.x - 25, self.rect.y - 30, 25, 70),
-                                                  1.7, 4.7, 3)
-
-
-class Attack(pygame.sprite.Sprite):
-    def __init__(self):
-        super(Attack, self).__init__()
-
-        self.image = pygame.image.load('nowepon.png')
-
-        self.image.set_colorkey((255,255,255))
-
-        self.rect = self.image.get_rect()
-
-        self.on = False
-        self.count = False
-        self.counter = 10
-        self.facing = ''
-    def update(self):
-
-        self.image = pygame.image.load('nowepon.png')
-
-        if player.facing == 'right' and self.count == False:
-            self.rect.x = player.rect.x + 50
-        if player.facing == 'left' and self.count == False:
-            self.rect.x = player.rect.x - 55
-
-        if keys[pygame.K_i] and self.count == False:
-            self.count = True
-            self.on = True
-            self.counter = 10
-            self.rect.y = player.rect.y - 40
-            if player.facing == 'right':
-                self.facing = 'right'
-            else:
-                self.facing = 'left'
-
-        if self.count == True:
-            self.image = pygame.image.load('san_attack.png')
-            self.counter -= 1
-            if self.facing == 'right':
-                self.rect.x += 20
-            if self.facing == 'left':
-                self.rect.x -= 20
-
-        if self.counter == -10:
-            self.count = False
-            self.on = False
-
+                    attack = pygame.draw.arc(screen, (255, 0, 0), (self.rect.x - 25, self.rect.y - 30, 25, 70), 1.7, 4.7, 3)
 
 # is enemeh or sth
 class Player1(pygame.sprite.Sprite):
@@ -113,7 +64,7 @@ class Player1(pygame.sprite.Sprite):
         self.image = pygame.image.load('filename.png').convert()
 
         self.image.set_colorkey((255, 255, 255))
-        # haha get rekt
+                        # haha get rekt
         self.rect = self.image.get_rect()
         self.facing = ''
 
@@ -140,16 +91,10 @@ custom_list = pygame.sprite.Group()
 # list where random and also maybe player
 all_sprites_list = pygame.sprite.Group()
 
-attack_list = pygame.sprite.Group()
-
 # mak pleher
 player = Player((255, 0, 0), 20, 20)
 # mek enemeh
 enemy = Player1()
-
-attack = Attack()
-
-attack_list.add(attack)
 
 # add enemeh to list
 custom_list.add(enemy)
@@ -160,14 +105,13 @@ all_sprites_list.add(enemy)
 # edd pleher to thes list
 all_sprites_list.add(player)
 
-all_sprites_list.add(attack)
-
 # gib pleher and enemeh coords
-e = player.rect.x = 500
-r = player.rect.y = 590
+player.rect.x = 500
+player.rect.y = 590
 
 enemy.rect.x = 1200
 enemy.rect.y = 400
+
 
 clock = pygame.time.Clock()
 
@@ -181,30 +125,33 @@ while running:
     # if pleher make collide in enemeh it make die!
     # enemy_hit_list = pygame.sprite.spritecollide(player, custom_list, False)
 
+
     keys = pygame.key.get_pressed()
     screen.fill((0, 0, 0))
 
     for event in pygame.event.get():
+        if event.type == pygame.USEREVENT:
+            counter -= 2
+            text = str(counter).rjust(3) if counter > 0 else 'attack'
         if event.type == pygame.QUIT:
             running = False
         if keys[pygame.K_ESCAPE]:
             running = False
+    if keys[pygame.K_o] and counter < 0:
+            counter = 10
     # make things spawn in screen
     all_sprites_list.draw(screen)
     # update the thangs
     player.update()
     enemy.update()
-    attack.update()
+
     # if player collide enemy then mak plaher ded lol ezpz also if attak is on then pleher is not die lulullu
     if pygame.sprite.spritecollideany(player, custom_list) and player.atk == False:
         player.kill()
         player.live = False
     if pygame.sprite.spritecollideany(player, custom_list) and player.atk == True:
         enemy.kill()
-
-    if pygame.sprite.spritecollideany(attack, custom_list) and attack.on == True:
-        enemy.kill()
-
+    screen.blit(font.render(text, True, (255, 230, 10)), (32, 48))
     clock.tick(30)
     pygame.display.flip()
 pygame.quit()
