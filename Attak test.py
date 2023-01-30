@@ -218,14 +218,12 @@ enemy.rect.y = 400
 
 clock = pygame.time.Clock()
 
-keys = pygame.key.get_pressed()
 
+restart = False
 running = True
-while running:
+while running or restart:
 
-    # if pleher make collide in enemeh it make die!
-    # enemy_hit_list = pygame.sprite.spritecollide(player, custom_list, False)
-
+    restart = False
     keys = pygame.key.get_pressed()
     screen.fill((0, 0, 0))
 
@@ -235,9 +233,7 @@ while running:
         if keys[pygame.K_ESCAPE]:
             running = False
         if keys[pygame.K_LCTRL] and keys[pygame.K_r]:
-            player.live = True
-            enemy.live = True
-
+            restart = True
 
     # make things spawn in screen
     all_sprites_list.draw(screen)
