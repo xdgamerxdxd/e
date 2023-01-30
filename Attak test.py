@@ -17,7 +17,7 @@ class Player(pygame.sprite.Sprite):
 
         pygame.draw.ellipse(self.image, color, [0, 0, width, height])
 
-       # get rect woooooooo //// Gives player a hitbox
+       # get rect woooooooo //// Gives player a hitbok
         self.rect = self.image.get_rect()
 
         # which way is player facing
@@ -49,15 +49,40 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_DOWN] and self.rect.y < 1080 - self.rect.height:
                 self.rect.y += vel
 
-            if keys[pygame.K_o]:
-                if self.facing == 'right':
-                    self.atk = True
-                    pygame.draw.arc(screen, (255, 0, 0), (self.rect.x + 20, self.rect.y - 30, 25, 70), 11,
-                                                  13.7, 3)
-                else:
-                    self.atk = True
-                    pygame.draw.arc(screen, (255, 0, 0), (self.rect.x - 25, self.rect.y - 30, 25, 70),
-                                                  1.7, 4.7, 3)
+
+class Meele_attack(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Meele_attack, self).__init__()
+        
+        self.image = pygame.image.load('nowepon.png')
+        self.image.set_colorkey((255,255,255))
+
+        self.rect = self.image.get_rect()
+
+
+    def update(self):
+
+        self.atk = False
+        self.image = pygame.image.load('nowepon.png')
+
+        if keys[pygame.K_o]:
+            if player.facing == 'right':
+                self.image = pygame.image.load('swor.png')
+                self.image = pygame.transform.scale(self.image, (150, 100))
+                self.rect = self.image.get_rect()
+                self.rect.x = player.rect.x + 40
+                self.rect.y = player.rect.y - 50
+                self.atk = True
+            else:
+                self.image = pygame.image.load('swol.png')
+                self.image = pygame.transform.scale(self.image, (150, 100))
+                self.rect = self.image.get_rect()
+                self.rect.x = player.rect.x - 200
+                self.rect.y = player.rect.y - 50
+                self.atk = True
+            
+        
+        
 
 
 # make attak
@@ -122,15 +147,19 @@ class Player1(pygame.sprite.Sprite):
         # haha get rekt
         self.rect = self.image.get_rect()
         self.facing = ''
+        self.live = True
 
     # mofe emeneh
     def update(self):
+
         vel = 20
         if keys[pygame.K_a] and self.rect.x > 0:
             self.rect.x -= vel
+            self.facing = 'left'
 
         if keys[pygame.K_d] and self.rect.x < 1920 - self.rect.width:
             self.rect.x += vel
+            self.facing = 'right'
 
         # Make thing go up (Jump up)
         if keys[pygame.K_w] and self.rect.y > 0:
@@ -138,7 +167,9 @@ class Player1(pygame.sprite.Sprite):
 
         if keys[pygame.K_s] and self.rect.y < 1080 - self.rect.height:
             self.rect.y += vel
-
+        
+        if self.facing == 'right':
+            self.image = pygame.transform.flip(self.image, True, False)
 
 # random thing list
 custom_list = pygame.sprite.Group()
@@ -155,8 +186,12 @@ enemy = Player1()
 
 attack = Attack()
 
+matk = Meele_attack()
+
 attack_list.add(attack)
 
+attack_list.add(matk)
+ 
 # add enemeh to list
 custom_list.add(enemy)
 
@@ -168,6 +203,8 @@ all_sprites_list.add(player)
 
 all_sprites_list.add(attack)
 
+all_sprites_list.add(matk)
+
 # gib pleher and enemeh coords
 e = player.rect.x = 500
 r = player.rect.y = 590
@@ -176,6 +213,8 @@ enemy.rect.x = 1200
 enemy.rect.y = 400
 
 clock = pygame.time.Clock()
+
+keys = pygame.key.get_pressed()
 
 running = True
 while running:
@@ -191,6 +230,10 @@ while running:
             running = False
         if keys[pygame.K_ESCAPE]:
             running = False
+        if keys[pygame.K_LCTRL] and keys[pygame.K_r]:
+            player.live = True
+            enemy.live = True
+
 
     # make things spawn in screen
     all_sprites_list.draw(screen)
@@ -199,16 +242,20 @@ while running:
     if player.live == True:
         player.update()
         attack.update()
+        matk.update()
     enemy.update()
+
+    if player.live == False:
+        matk.image = pygame.image.load('nowepon.png')
+        matk.atk = False
     # if player collide enemy then mak plaher ded lol ezpz also if attak is on then pleher is not die lulullu
     if pygame.sprite.spritecollideany(player, custom_list) and player.atk == False:
         player.kill()
         player.live = False
-    if pygame.sprite.spritecollideany(player, custom_list) and player.atk == True:
-        enemy.kill()
 
-    if pygame.sprite.spritecollideany(attack, custom_list):
+    if pygame.sprite.spritecollideany(attack, custom_list) and attack.on == True or pygame.sprite.spritecollideany(matk, custom_list) and matk.atk == True:
         enemy.kill()
+        enemy.live = False
 
     clock.tick(30)
     pygame.display.flip()
