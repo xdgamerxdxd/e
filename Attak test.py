@@ -169,7 +169,11 @@ class Player1(pygame.sprite.Sprite):
             self.rect.y += vel
         
         if self.facing == 'right':
-            self.image = pygame.transform.flip(self.image, True, False)
+            self.image = pygame.image.load('filenamel.png')
+            
+        if self.facing == 'left':
+            self.image = pygame.image.load('filename.png')
+            
 
 # random thing list
 custom_list = pygame.sprite.Group()
