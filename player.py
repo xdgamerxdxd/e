@@ -25,7 +25,7 @@ class Player(pygame.sprite.Sprite):
 
     # moof the pleher
     def update(self):
-
+        keys = pygame.key.get_pressed()
         vel = 20
         self.atk = False
 

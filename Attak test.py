@@ -257,6 +257,6 @@ while running or restart:
         enemy.kill()
         enemy.live = False
 
-    clock.tick(30)
+    clock.tick(60)
     pygame.display.flip()
 pygame.quit()
